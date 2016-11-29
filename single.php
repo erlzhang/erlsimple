@@ -1,6 +1,4 @@
-<?php
- get_header(); 
- ?>
+<?php get_header();?>
 <div class="main">
 	<div class="content-widescreen">
 	<?php if (have_posts()) : ?> 
