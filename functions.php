@@ -6,16 +6,13 @@ include_once('includes/theme-options.php');
 //特色图片
 add_theme_support( 'post-thumbnails' );
 
-
+//禁用前端管理栏
 add_filter( 'show_admin_bar', '__return_false' );
 
 // 菜单注册
 if ( function_exists('register_nav_menus') ) {
     register_nav_menus(array(
         'primary' => '导航菜单',
-    ));
-    register_nav_menus(array(
-        'secondery' => '移动端导航菜单',
     ));
 }
 
@@ -75,7 +72,6 @@ function _add_theme_script(){
 		wp_enqueue_script( 'theme_backstretch',  get_template_directory_uri() . '/js/jquery.backstretch.min.js', false );
 	}
 	$option = get_option('erlsimple_theme_options');
-	print_r($post);
 	if ((is_home() && ($option['if_bg_on'] == 1)) || (is_category()&&($option['if_catbg'] == 1)) || (is_page()&&has_post_thumbnail())){
 		wp_enqueue_script( 'common_scroll', get_template_directory_uri() . '/js/common_scroll.js' );
 	}
@@ -248,7 +244,7 @@ function comment_mail_notify($comment_id){
     wp_mail( $to, $subject, $message, $headers );
   }
 }
-//add_action('comment_post', 'comment_mail_notify');
+add_action('comment_post', 'comment_mail_notify');
 //面包屑导航
 function cmp_breadcrumbs() {
 	$delimiter = '&gt;'; // 分隔符
@@ -426,22 +422,6 @@ function remove_width_height_attribute($content){
 } 
 add_filter('the_content', 'remove_width_height_attribute', 99); 
 
-//评论过滤
-function comment_post( $incoming_comment ) {
-	$pattern = '/[一-龥]/u';
-	// 禁止全英文评论
-	if(!preg_match($pattern, $incoming_comment['comment_content'])) {
-		err(__('您的评论中必须包含汉字！'));
-	}
-	$pattern = '/[あ-んア-ン]/u';
-	// 禁止日文评论
-	if(preg_match($pattern, $incoming_comment['comment_content'])) {
-		err(__('禁止评论日文！'));
-	}
-	return( $incoming_comment );
-}
-add_filter('preprocess_comment', 'comment_post');
-
  /* Archives list by zwwooooo | http://zww.me */
  function archives_list() {
      if( !$output = get_option('archives_list') ){
@@ -520,6 +500,4 @@ $comment = wp_handle_comment_submission( wp_unslash( $_POST ) );
 	$user = wp_get_current_user();
 	do_action( 'set_comment_cookies', $comment, $user );
 	die();		
-}
-
-?>
+}?>
