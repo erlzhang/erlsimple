@@ -17,9 +17,7 @@
 				text-indent: -9999px;
 			}
 			</style>					
-			<?php }
-			?>
-
+			<?php }?>
 			<a href="<?php echo home_url();?>" class="logo-s"><?php echo get_bloginfo('name');?></a>
 			<?php
 			if(function_exists('wp_nav_menu')) {
