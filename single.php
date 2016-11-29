@@ -58,11 +58,6 @@ if ( has_post_thumbnail() ) :
 <?php comments_template(); ?>
 </div>
     </section>
-	<div class="bottom_bar">
-		<?php previous_post_link('%link','<i class="fa fa-angle-left"> </i>&nbsp;&nbsp;上一篇') ?></span>
-		<?php next_post_link('%link','下一篇&nbsp;&nbsp;<i class="fa fa-angle-right"> </i>') ?>
-		<a href="#" id="top" tilte="返回顶部" class="totop_bar"> <i class="fa fa-chevron-up"> </i></a>
-	</div>
     <!-- /.posts -->
         <?php endwhile; ?>
 <?php endif; ?> 
