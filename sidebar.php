@@ -2,10 +2,11 @@
 <?php 
 $option=get_option('erlsimple_theme_options');
 if($option['if_author']==1):
-require_once('includes/author_status.php');
- endif;?>
-<?php if ( is_active_sidebar( 'sidebar-1' ) ) : ?>
-		<?php dynamic_sidebar( 'sidebar-1' ); ?>
+	require_once('includes/author_status.php');
+endif;
+?>
+<?php if ( is_active_sidebar( 'sidebar-1' ) ) :?>
+		<?php dynamic_sidebar( 'sidebar-1' );?>
 <?php endif; ?>
     <aside class="widget">
 		<h3 class="widget-title"><i class="fa fa-bookmark-o"></i>&nbsp;&nbsp;标签<em>/Tags</em></h3>
@@ -32,20 +33,19 @@ require_once('includes/author_status.php');
 			?> 	
 		</div>
 	</aside>
-	<?php $option=get_option('erlsimple_theme_options');?>
 	<?php if ($option['friendlink']==1):?>
     <aside class="widget">
 		<h3 class="widget-title"><i class="fa fa-users"></i>&nbsp;&nbsp;友情链接<em>/Links</em></h3>
         <div class="sider_list">
 			<?php
-			$bookmarks = get_bookmarks('title_li=&orderby=rand'); //全部链接随机输出
+			$bookmarks = get_bookmarks('title_li=&orderby=rand');//全部链接随机输出
 			if ( !empty($bookmarks) ) {
 				foreach ($bookmarks as $bookmark) {
 				echo '<li><a href="' , $bookmark->link_url , '" title="' , $bookmark->link_description , '" target="_blank" >' , $bookmark->link_name , '</a></li>';
 				}
 			}
 			?>
-        <li><a href="/friendlinks" title="查看全部链接">查看更多&gt;&gt;</a></li></div>
+        </div>
 	</aside>
 	<?php endif;?>
 </div>
