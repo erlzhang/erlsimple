@@ -54,4 +54,3 @@
 <a href="javascript:grin(':cry:')"><img src="<?php bloginfo('template_url') ?>/smiley/icon_cry.gif" alt="" /></a>
 <a href="javascript:grin(':mrgreen:')"><img src="<?php bloginfo('template_url') ?>/smiley/icon_mrgreen.gif" alt="" /></a>
 <br />
-<?php { echo ''; } ?>
