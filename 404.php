@@ -21,7 +21,7 @@
     </header>
     <div class="nav-bar">
         <div class="nav-bar-inner">
-            <a href="/" class="logo">
+            <a href="<?php echo home_url();?>" class="logo">
                 <h1><?php echo get_bloginfo('name');?></h1>
             </a>
             
