@@ -2,18 +2,19 @@
 <div class="main">
 	<div class="content">
 	<?php if (have_posts()) : ?> 
-		<div class="crumbs_patch">
-			<div itemtype="http://schema.org/WebPage" id="crumbs"><i class="fa fa-home"></i> <a itemprop="breadcrumb" href="<?php echo home_url();?>" class="tooltip tooltipstered">首页</a> &gt; <span class="current">“<?php  the_search_query();?>” 的搜索结果</span></div>
-		</div>
+		
 		<section class="posts">
 			<div class="posts-inner">
+				<div class="crumbs_patch">
+				<div itemtype="http://schema.org/WebPage" id="crumbs"><i class="fa fa-home"></i> <a itemprop="breadcrumb" href="<?php echo home_url();?>" class="tooltip tooltipstered">首页</a> &gt; <span class="current">“<?php  the_search_query();?>” 的搜索结果</span></div>
+			</div>
 			<?php while (have_posts()) : the_post();?>
 				<article class="post text" itemscope itemtype="http://schema.org/Article">
 					<a href="<?php the_permalink() ?>" rel="bookmark" itemprop="url">
 						<h3 itemprop="name"><?php the_title();?></h3>
 					</a>
 					<?php echo mb_strimwidth(strip_tags(apply_filters('the_content', $post->post_content)), 0, 300,"...");?> 
-					<a href="<?php the_permalink();?>" class="link-all">阅读全文</a>
+					<a href="<?php the_permalink();?>" class="link-all">阅读更多>></a>
 					<footer class="post-footer">
 						<div class="notes-options">
 							<div class="post-info">
@@ -35,13 +36,14 @@
 			</div>
 		</section>        
 	<?php else :?>
-		<div class="crumbs_patch">
-			<div itemscope="" itemtype="http://schema.org/WebPage" id="crumbs"><i class="fa fa-home"></i> <a itemprop="breadcrumb" href="<?php echo home_url();?>" class="tooltip tooltipstered">首页</a> &gt; <span class="current">无搜索结果</span></div>
-		</div>
+		
 		<section class="posts">
 			<div class="posts-inner">
+				<div class="crumbs_patch">
+					<div itemscope="" itemtype="http://schema.org/WebPage" id="crumbs"><i class="fa fa-home"></i> <a itemprop="breadcrumb" href="<?php echo home_url();?>" class="tooltip tooltipstered">首页</a> &gt; <span class="current">无搜索结果</span></div>
+				</div>
 				<article class="post text" itemscope itemtype="http://schema.org/Article">
-					<p>无搜索结果！</p>
+					<h3>无搜索结果！</h3>
 				</article>
 			</div>
 		</section>     
