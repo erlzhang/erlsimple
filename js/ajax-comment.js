@@ -6,14 +6,6 @@ Author URI: https://github.com/erlzhang
 
 var respond = $("#respond");
 
-function cancelReply(){
-	respond.insertAfter("#respond_box");
-	parent.value = "0";
-	this.style.display = "none";
-	this.onclick = null;
-	return false	
-}
-
 var changeMsg = "[ 更改 ]";
 var closeMsg = "[ 隐藏 ]";
 function toggleCommentAuthorInfo() {
@@ -38,7 +30,13 @@ addComment = {
 		$(reply).show()
 		$("#replying-parent").html($("#"+commId).find(".fn").html())
 		parent.value = parentId;
-		reply.onclick = cancelReply;
+		reply.onclick = function(){
+			respond.insertAfter("#respond_box");
+			parent.value = "0";
+			this.style.display = "none";
+			this.onclick = null;
+			return false	
+		}
 	}
 }
 $("#commentform").submit(function(){
@@ -69,13 +67,11 @@ $("#commentform").submit(function(){
 				$("#success").show();
 				var p = $(data).data("parent");
 				var container;
-				console.log(container);
-				console.log(p);
 				if(p == 0){
 					container = $(".comment-list");
 					
 				}else{
-					cancelReply();
+					//cancelReply();
 					if($("#comment-" + p).find("ul.children").length > 0){
 						container = $("#comment-" + p).find("ul.children")
 					}else{
@@ -98,3 +94,10 @@ $("#commentform").submit(function(){
 		}
 	});
 });
+
+
+
+
+
+
+
