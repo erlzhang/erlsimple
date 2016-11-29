@@ -1,4 +1,4 @@
-﻿/*通用*/
+/*通用*/
 *{
 	margin:0;
 	padding:0;
@@ -641,6 +641,11 @@ li{
 	padding-top: 1rem;
 	border-top: 1px solid #ddd;
 }
+.author{
+	line-height:2rem;
+	padding-left:1%;
+	margin-bottom:.5rem;
+}
 .comment_current .logout{
 	font-size:.8rem;
 }
@@ -685,9 +690,15 @@ li{
     height: 120px;
     color: #666;
     padding: 10px;
-	margin:1rem 1%;
+	margin:1rem 1% 0 1%;
 	border:1px solid #ddd;
 	border-radius:3px;
+}
+.loading,.warning,.success,.info{
+	display:none;
+	line-height:35px;
+	padding-left:1%;
+	margin-bottom:.5rem;
 }
 .submit {
 	outline: 0;
@@ -704,13 +715,13 @@ li{
 	width:180px;
 	line-height:55px;
 	margin-left:1%;
+	margin-bottom:1.5rem;
 }
 .submit:hover {
 	background-color: #a6d7de;
 }
 .smiles-icons {
 	position: relative;
-	top: -1em;
 	float: right;
 	margin-bottom: -2em;
 	cursor: pointer;
@@ -724,6 +735,10 @@ li{
 .comment-body {
 	border-top: 1px solid #ddd;
 	padding: .5rem 0 0 0;
+}
+.comment-loading{
+	padding:0.5rem;
+	background-color:#efefef;
 }
 
 ul.children {
@@ -915,24 +930,6 @@ ul.children {
 	.totop{
 		display:none;
 	}
-}
-.bottom_bar{
-	width:100%;
-	position:fixed;
-	line-height:45px;
-	border-top:1px solid #ccc;
-	background-color:#fff;
-	bottom:0;
-	left:0;
-	display:none;
-}
-.bottom_bar a{
-	display:table-cell;
-	text-align:center;
-	border-left:1px solid #ccc;
-}
-.bottom_bar a:first-child{
-	border:none;
 }
 /*归档页面*/
 .al_post_list li a {
