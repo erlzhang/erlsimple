@@ -86,4 +86,4 @@ logo分为首页切换图大logo（需开启首页背景图切换功能）和导
 
 *（服务器挂了于是没有demo了）*
 
-[1]:http://pan.baidu.com/s/1eRVSiUQ
+[1]:http://pan.baidu.com/s/1c2MdfZq
