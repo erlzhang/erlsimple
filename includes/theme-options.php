@@ -1,4 +1,4 @@
-<?php 
+<?php
 //主题菜单设置
 $option = get_option('erlsimple_theme_options');//获取选项   
 function theme_settings(){
@@ -145,8 +145,8 @@ function theme_setting_display(){
 						关闭</label></td>
 				</tr>
 			</tbody>
-		</table> 
-    <?php wp_nonce_field('update-options'); ?>   
+		</table>
+    <?php wp_nonce_field('update-options'); ?>
     <input type="hidden" name="action" value="update" />
 		<p class="submit"><input type="submit" name="theme_options_submit" id="submit" class="button button-primary" value="保存"></p>
 		</form>
@@ -155,10 +155,9 @@ function theme_setting_display(){
 			jQuery('.add_bg').click(function(){
 				jQuery('#bginputs').append('<p><input type="text" name="bg[]" value=""  class="regular-text"/></p>');
 			})
-			
-		});   
+		});
 		</script>
 	</div>
 <?php }
-add_action('admin_menu', 'theme_settings');   
+add_action('admin_menu', 'theme_settings');
 ?>
