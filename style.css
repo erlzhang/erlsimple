@@ -924,7 +924,7 @@ ul.children {
 	background-color:#fff;
 	bottom:0;
 	left:0;
-	display:table;
+	display:none;
 }
 .bottom_bar a{
 	display:table-cell;
