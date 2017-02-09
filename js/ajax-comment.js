@@ -5,21 +5,6 @@ Author URI: https://github.com/erlzhang
 */
 
 var respond = $("#respond");
-
-var changeMsg = "[ 更改 ]";
-var closeMsg = "[ 隐藏 ]";
-function toggleCommentAuthorInfo() {
-	jQuery('#comment-author-info').slideToggle('slow', function(){
-		if ( jQuery('#comment-author-info').css('display') == 'none' ) {
-		jQuery('#toggle-comment-author-info').text(changeMsg);
-		} else {
-		jQuery('#toggle-comment-author-info').text(closeMsg);
-}
-});
-}
-jQuery(document).ready(function(){
-	jQuery('#comment-author-info').hide();
-});
 	
 addComment = {
 	moveForm: function(commId, parentId, respondId, postId, num){
