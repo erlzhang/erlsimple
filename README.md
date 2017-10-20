@@ -85,5 +85,5 @@ logo分为首页切换图大logo（需开启首页背景图切换功能）和导
 [下载地址][1]  [演示地址][2]
 
 
-[1]:http://pan.baidu.com/s/1c2MdfZq
+[1]:https://github.com/erlzhang/erlsimple/archive/master.zip
 [2]:http://demo.yexiqingxi.com
