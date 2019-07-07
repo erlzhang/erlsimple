@@ -16,11 +16,11 @@
 			<div class="cancel-comment-reply">
 				<small><?php cancel_comment_reply_link(); ?></small>
 			</div>
-			
+
 			<?php if ( get_option('comment_registration') && !$user_ID ) : ?>
 			<p><?php print '您必须'; ?><a href="<?php echo get_option('siteurl'); ?>/wp-login.php?redirect_to=<?php echo urlencode(get_permalink()); ?>"> [ 登录 ] </a>才能发表留言！</p>
 			<?php else : ?>
-			
+
 			<form action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post" id="commentform">
 			<?php if ( $user_ID ) : ?>
 				<div class="comment_current">你好，<a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><?php echo $user_identity; ?></a>！  <a href="<?php echo wp_logout_url(get_permalink()); ?>" title="退出" class="logout"><?php print '[ 退出 ]'; ?></a></div>
@@ -50,7 +50,7 @@
 					<div id="loading" class="loading"><i class="fa fa-spinner fa-spin"></i>&nbsp;&nbsp;正在提交中，请稍候...</div>
 					<div id="error" class="warning"></div>
 					<div id="success" class="success"><i class="fa fa-check"></i>&nbsp;&nbsp;评论提交成功</div>
-					<div id="replying" class="info">回复 <strong id="replying-parent"></strong> 的评论,点击取消回复。</div>
+					<div id="replying" class="info">回复 <strong id="replying-parent"></strong> 的评论,点击取消回复</div>
 				</div>
 				<input class="submit" name="submit" type="submit" id="submit" tabindex="5" value="发表评论" />
 				<?php comment_id_fields(); ?>
@@ -65,7 +65,6 @@
 	<!-- If comments are closed. -->
 		<p class="nocomments">报歉!评论已关闭.</p>
 	<?php endif; ?>
-	<?php if ($comments) : ?>
 		<h3 id="comments" class="comments_list_title"><?php comments_number('', '1 COMMENT', '% COMMENTS' );?></h3>
 		<ol class="comment-list">
 		<?php wp_list_comments('type=comment&callback=mytheme_comment&end-callback=mytheme_end_comment&max_depth=23'); ?>
@@ -75,7 +74,6 @@
 	'next_text' => '&gt;'
 	)); ?></div>
 	<?php else :?>
-	<?php endif;?>
     </div>
 </div>
 <?php endif;?>
