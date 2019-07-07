@@ -82,8 +82,9 @@ logo分为首页切换图大logo（需开启首页背景图切换功能）和导
 
 **2016.11.29** 重写AJAX评论
 
-[下载地址][1]  [演示地址][2]
+**2019.07.07** 修复ajax评论bug
+
+[下载地址][1]
 
 
 [1]:https://github.com/erlzhang/erlsimple/archive/master.zip
-[2]:http://demo.yexiqingxi.com
